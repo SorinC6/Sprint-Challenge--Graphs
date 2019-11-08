@@ -6,6 +6,7 @@ import random
 
 # Load world
 world = World()
+#test commit - forgot about creating the branch
 
 # You may uncomment the smaller graphs for development and testing purposes.
 
@@ -21,7 +22,41 @@ player = Player("Name", world.startingRoom)
 
 
 # FILL THIS IN
-traversalPath = ['n', 's']
+traversalPath = []
+visited = {}
+
+path = []
+
+directions = {'n':'s', 's':'n', 'e':'w', 'w':'e'}
+
+
+visited[player.currentRoom.id] = player.currentRoom.getExits()
+
+while len(visited) < len(roomGraph) - 1:
+    # so now we check if the player's room is not in visited
+    if player.currentRoom.id not in visited:
+        # we then add it to the visited dictionary so we don't go there again
+        visited[player.currentRoom.id] = player.currentRoom.getExits()
+        previous_direction = path[-1]
+        visited[player.currentRoom.id].remove(previous_direction)
+
+    while len(visited[player.currentRoom.id]) == 0:
+
+        previous_direction = path.pop()
+        traversalPath.append(previous_direction)
+        # this allows us to move to the next room so we find the most recent direction in where we moved, move to that rooom we potentially haven't visited check if we visited
+        player.travel(previous_direction)
+
+    #  find the current rooms getExits and then we find the last value on that list with pop and we return it into the "move" here
+    move = visited[player.currentRoom.id].pop(0)
+    #  append it to the path since its the direction we want to go
+    traversalPath.append(move)
+    # we append it to the path so we can record the room we just visited
+    path.append(directions[move])
+    # move it that direction with the players function travel
+
+    player.travel(move)
+
 
 
 # TRAVERSAL TEST
